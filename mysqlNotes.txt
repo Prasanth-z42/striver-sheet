@@ -1,0 +1,227 @@
+MySQL Notes - Logic First (Tamil)
+
+1. Introduction to Databases
+
+Database (DB): A collection of data.
+Relational Database (RDB): Stores data in table format (rows & columns).
+To modify/query data, we need:
+SQL (Structured Query Language)
+DBMS (Database Management System)
+
+2. DBMS (Database Management System)
+
+Interface between database and end-user.
+
+Functions of DBMS:
+✅ Stores, retrieves, defines, and manages data.
+✅ Provides easy CRUD operations (Create, Read, Update, Delete).
+✅ Manages authentication, concurrency, logging, backup, and optimization.
+
+Types of Databases:
+Relational DB - MySQL, PostgreSQL, Oracle, SQL Server
+NoSQL DB - MongoDB, Firebase
+Network DB - IBM IMS
+
+3. RDBMS (Relational DBMS)
+
+RDBMS	Type
+MySQL	Open-source
+SQL Server	Microsoft
+Oracle DB	IBM
+PostgreSQL	Open-source
+
+Diagram Representation:
+        SQL Queries
+            ↓
+         DBMS
+        /    \
+    Table  -  Data
+
+4. SQL Basics
+
+Comments in SQL
+Single-line comment: -- this is a comment
+Multi-line comment: /* this is a comment */
+
+Data Types in SQL
+Character Data Types:
+Data Type	Description
+CHAR(10)	Fixed length ("NYC__") - max 255 bytes
+VARCHAR(100)	Variable length ("NYC") - max 65535 bytes
+TEXT	Stores long text
+BLOB	Binary Large Object (files, images)
+
+Numeric Data Types:
+Data Type	Description
+INT	Integer (TINYINT, SMALLINT, MEDIUMINT, BIGINT)
+
+DECIMAL(p, s)	Fixed decimal (999.99 → p=5, s=2)
+FLOAT(p,s), DOUBLE(p,s)	Floating-point numbers
+
+Date and Time Data Types:
+Data Type	Example Format
+DATE	'YYYY-MM-DD'
+DATETIME	'YYYY-MM-DD HH:MM:SS'
+TIMESTAMP	Auto-updating date/time
+YEAR	'YYYY'
+TIME	'HH:MM:SS'
+
+5. Basic SQL Commands
+
+Database Operationssql
+
+SHOW DATABASES; -- View available databases
+CREATE DATABASE db_name; -- Create a database
+DROP DATABASE db_name; -- Delete a database
+DROP DATABASE IF EXISTS db_name; -- Delete only if exists
+USE db_name; -- Select a database
+SHOW TABLES; -- Show all tables in the database
+
+Table Operations
+sql
+Copy code
+CREATE TABLE student (
+    id INT PRIMARY KEY,
+    name VARCHAR(20),
+    gpa DECIMAL(3,2)
+);
+
+DESCRIBE student; -- Show table structure
+DROP TABLE student; -- Delete a table
+ALTER TABLE student ADD dept CHAR(3); -- Add column
+ALTER TABLE student DROP dept; -- Delete column
+
+6. Inserting and Retrieving Data
+
+Insert Data
+sql
+Copy code
+INSERT INTO student VALUES (1, "Prasanth", 8.32);
+INSERT INTO student(id, name) VALUES (2, "Harish");
+INSERT INTO student VALUES (3, "Abi", 7.89), (4, "John", 8.55);
+Retrieve Data
+sql
+Copy code
+SELECT * FROM student; -- View all records
+SELECT id, name FROM student; -- View specific columns
+SELECT * FROM student WHERE gpa >= 8.0; -- Filtering rows
+SELECT * FROM student WHERE name LIKE 'A%'; -- Starts with 'A'
+
+7. Updating and Deleting Data
+
+Update Data
+sql
+Copy code
+UPDATE student SET gpa = 9.0 WHERE id = 1;
+Delete Data
+sql
+Copy code
+DELETE FROM student WHERE id = 2;
+
+8. SQL Clauses
+
+WHERE Clause (Filtering)
+sql
+Copy code
+SELECT * FROM employee WHERE salary BETWEEN 20000 AND 30000;
+SELECT * FROM employee WHERE job_desc IN ("HR", "Sales");
+SELECT * FROM employee WHERE empName LIKE 'A%';
+ORDER BY (Sorting)
+sql
+Copy code
+SELECT * FROM employee ORDER BY empName ASC, salary DESC;
+DISTINCT (Unique Values)
+sql
+Copy code
+SELECT DISTINCT job_desc FROM employee;
+
+9. Aggregate Functions
+
+Function	Description
+COUNT(*)	Counts rows
+AVG(column)	Average value
+SUM(column)	Total sum
+MAX(column)	Highest value
+MIN(column)	Lowest value
+Example:
+
+sql
+Copy code
+SELECT COUNT(*) FROM employee;
+SELECT AVG(salary) FROM employee WHERE job_desc = "Manager";
+
+10. Grouping Data
+
+GROUP BY & HAVING
+sql
+Copy code
+SELECT job_desc, COUNT(empId) FROM employee GROUP BY job_desc;
+SELECT job_desc, COUNT(empId) FROM employee GROUP BY job_desc HAVING COUNT(empId) > 1;
+
+11. SQL Constraints
+
+Constraint	Description
+NOT NULL	Column cannot be NULL
+DEFAULT	Assigns default value
+UNIQUE	No duplicate values
+CHECK	Ensures condition is met
+PRIMARY KEY	Unique identifier
+FOREIGN KEY	Links two tables
+Example:
+
+sql
+Copy code
+CREATE TABLE emp (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    ename VARCHAR(20) NOT NULL,
+    salary INT CHECK (salary > 100000)
+);
+
+12. Foreign Keys
+
+sql
+Copy code
+CREATE TABLE branch (
+    branch_id INT PRIMARY KEY AUTO_INCREMENT,
+    location VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE emp (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    ename VARCHAR(20) NOT NULL,
+    branch_id INT,
+    CONSTRAINT fk_branch FOREIGN KEY (branch_id) REFERENCES branch(branch_id) ON DELETE CASCADE
+);
+
+13. SQL Joins
+
+Join Type	Description
+INNER JOIN	Matches rows in both tables
+LEFT JOIN	All rows from left table + matched right
+RIGHT JOIN	All rows from right table + matched left
+CROSS JOIN	Cartesian product
+Example:
+
+sql
+Copy code
+SELECT emp.id, emp.ename, branch.location
+FROM emp INNER JOIN branch
+ON emp.branch_id = branch.branch_id;
+
+14. Indexing
+
+sql
+Copy code
+SHOW INDEX FROM emp;
+CREATE INDEX name_index ON emp(ename);
+ALTER TABLE emp DROP INDEX name_index;
+
+15. UNION Operator
+
+Combines results of two SELECT queries (removes duplicates).
+sql
+Copy code
+SELECT * FROM branch
+UNION
+SELECT * FROM client;
+Use UNION ALL to retain duplicates.

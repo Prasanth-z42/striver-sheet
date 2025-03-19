@@ -1,0 +1,494 @@
+MySql -> Logic first tamil
+
+database -> collection of data
+relational db -> table form
+
+modify any data -> need sql (structured query language)
+and need data base management system(DBMS).
+
+DBMS :
+	-> Interface between db and end user.
+	-> Software to store, retrieve, define and manage data in db.
+	-> easy CRUD operation
+	-> Takes care of authentication, concurrency, logging, backup, optimization etc.
+
+types of db -> relational , no sql , network, 
+
+R-DBMS :
+	Mysql -> open source
+	sql server -> MS
+	Oracle -> IBM
+	PostgreSql -> open source
+
+diagram 
+	sql -----> DBMS <----- Table(modify) or Datas
+
+multi line comment -> /*   */
+single line comment -> --
+
+data types :
+	Character - char(10) -> fixed length -> "nyc__"-> 255 bytes
+		  varchar(100) -> var length -> "nyc" -> 65535
+		  text -> tiny text, text, mediumtext, longtext
+		  blob(binary large object file) -> tiny, medium, long
+	
+	it define character set
+	show character set;
+
+	Numeric -> int (tiny, small, medium, big) , 
+	decimal -> (p, s) -> 999.99; p-> precision, s-> scale
+		-> float(p,s), double(p,s)
+
+	date :
+		-> date, dateTime, timestamp, year, time
+
+show databases; -> shows how many db have it.
+
+create :
+create database name(optional); ctrl + enter -> run 
+
+delete : 
+drop database db_name; 
+drop schema db_name;
+
+check if exists:
+drop schema if exits db_name;
+
+choose db:
+use db_name;
+
+show tables; -> if exits it shows.
+
+create table:
+
+create table student (
+	id int primary key,
+	name varchar(20),
+	gpa decimal(3, 2)
+);
+
+check table :
+describe tb_name; -> show table information
+
+delete table :
+drop table tb_name;
+
+add extra column :
+alter table tb_name add dept char(3);
+
+delete seperate column :
+alter table tb_name drop col_name;
+
+insert values in a table :
+insert into tb_name values(1, "prasanth", 8.32);
+
+view table :
+select * from tb_name;    * -> means all col, row.
+
+insert multiple lines in a table :
+insert into tb_name values
+	(), (), ();
+
+insert into tb_name(id, name) values(2, "harish");
+
+view only seperate columns :
+select id, name from tb_name;
+
+where clause and conditions :
+
+create table employee(
+	empId int primary key,
+	empName varchar(30),
+	salary int
+);
+
+select * from employee;
+
+syntax :
+	select * (or) col_names 
+	from tb_name
+	where condition;
+
+select * from tb_name
+where salary >= 20000 and salary <= 30000;
+
+select * (or) eId, eName from tb_name
+where ename != "prasanth"
+limit 5;
+
+select * from tb_name
+where job_desc in ("hr", "sales");
+where job_desc not in ("hr", "CEO");
+where salary between 20000 and 30000;
+
+select * from tb_name
+limit 5;
+
+-- like 
+-- wildcards %(zero or more chars), _(one char)
+
+select * from tb_name
+where ename like 'A%';
+
+select * from tb_name
+where ename like 'A%A';
+
+update :
+update tb_name
+set job_desc = "Analyst"
+where job_desc = "Engineer";
+
+delete from tb_name
+where eId = 10;
+
+Distinct and Order by :
+
+show only job_desc column :
+select job_desc from tb_name;
+select distinct job_desc from tb_name;
+
+-- order by
+select * from tb_name
+order by ename, salary; -> display alphabet order
+
+select * from tb_name
+order by salary desc; -> descending order
+
+select * from tb_name
+where job_desc = "manager"
+order by salary, ename;
+
+set preferences :
+select * from tb_name
+order by ( case job_desc 
+	when 'ceo' then 1
+	when 'manager' then 2
+	else 100 end
+), ename;
+
+
+Functions in sql :
+	-> performs a specific task.
+
+count employees :
+select count(*) total(optinal)->title Name
+from tb_name;
+
+select count(*) total_Managers 
+from tb_name
+where job_desc = "Manager";
+
+select avg(salary)
+from tb_name
+where job_desc = "manager";
+
+select sum(salary)
+from tb_name
+where job_desc = "analyst";
+
+select max(salary)
+from tb_name;
+
+select min(salary)
+from tb_name; 
+
+-- string related
+select ucase(ename) name(alias name), salary 
+from tb_name;
+
+select ename, char_length(ename) char_count
+from tb_name;
+
+concat : -> 100000 -> Rs.100000
+select ename, concat('rs.', salary) salary
+from tb_name;
+
+format : -> 100000 -> Rs.1,00,000
+select ename, concat('rs.',format(salary, 0)) salary
+from tb_name;
+
+left : -> eg -> Admin -> Adm
+select ename, left(job_desc, 3)
+from tb_name;
+
+Date and Date Fn in SQL :
+alter table tb_name add column Hire_date date;
+
+update tb_name 
+set Hire_date = "2003-02-28" -> YYYY-MM-DD
+where job_desc = "analyst"; 
+
+Date functions :
+
+now() :
+select now(); -> display current time
+select date(now()); -> display current date
+select curdate();
+
+date format : 14/02/2025
+select date_format(curdate(), "%d/%m/%y") as date;
+
+datediff between two dates :
+select datediff(curdate(), "28/02/2003");
+
+date_add :
+select date_add(curdate(), interval 1 week) as "after one week";
+
+----------------------------------------------------------------------------------------------
+Group by and having :
+
+select job_desc, avg(salary) as avg_sal
+from tb_name
+group by job_desc;
+
+select job_desc, count(id) as count_emp
+from tb_name
+group by job_desc;
+
+having : 
+select job_desc, count(id) as count_emp
+from tb_name
+group by job_desc;
+
+select job_desc, count(id) as count_emp
+from tb_name
+group by job_desc
+having count(id) > 1;
+
+select job_desc, count(id) as count_emp
+from tb_name
+group by job_desc
+having count(id) > 1
+order by job_desc;
+
+-- where -> filters rows
+-- having -> filters groups
+
+select job_desc, count(id) as count_emp
+from tb_name
+where salary > 150000
+group by job_desc
+having count(id) > 1
+order by job_desc;
+
+---------------
+Constraints :
+
+not null :
+default :
+unique :
+check :
+create table emp {
+	id int primary key auto_increment = 1000,
+	ename varchar(20) not null,
+	job_desc varchar(10) default 'unassigned',
+	salary int,
+	pan varchar(10) unique,
+	check (salary > 100000)
+);
+
+insert into emp ename, salary values (
+	("prasanth", 200000), ("Abi", 100001)
+);
+
+op -> 1 prasanth unassigned 200000
+     -> 2 Abi           unassigned 100001
+
+--------------------
+add constraints in a exist table :
+
+not null :
+alter table tb_name
+modify ename varchar(20) not null;
+
+default :
+alter table tb_name
+alter job_desc 
+set default 'unassigned';
+
+drop default :
+alter table tb_name
+alter job_desc
+drop default; 
+
+check :
+alter table tb_name
+add check (salary > 100000);
+
+-- add check constraint
+alter table tb_name
+add constraint che_sal check (salary > 100000);
+
+-- drop check constraint
+alter table tb_name
+drop check che_sal;
+
+-----------------------
+foreign key
+	used to connect two tables.
+
+create table branch (
+	branch_id int primary key auto increment = 1, 
+	location varchar(20) not null,
+	addr varchar(100)
+);
+
+create table emp (
+	id int primary key auto increment = 1,
+	ename varchar(20) not null,
+	job_desc varchar(20),
+	salary int,
+	branch_id int,
+	constraint fk_branchId foreign key(branch_id) references branch(branch_id)) 
+);
+
+remove foreign key :
+alter table emp 
+drop foreign key fk_branchId;
+
+alter table branch 
+add column manager_id int 
+constrains fk_managerId foreign key(manager_id) references emp(id));
+
+---------------------------
+index :
+    indexing : -> unique, primary key, foreign key
+
+show index from tb_name;
+
+create index :
+create index name_index on emp(ename);
+
+remove index:
+alter table emp drop index name_index;
+
+add index:
+alter table emp add index (ename);
+
+--------------------------
+on delete :
+
+delete from branch 
+where branch_id = 2;	// through error
+
+create table branch (
+	branch_id int primary key auto increment = 1, 
+	location varchar(20) not null,
+	addr varchar(100)
+);
+
+set null : sets null
+cascade : -> (delete entire row)
+create table emp (
+	id int primary key auto increment = 1,
+	ename varchar(20) not null,
+	job_desc varchar(20),
+	salary int,
+	branch_id int,
+	constraint fk_branchId foreign key(branch_id) references branch(branch_id)) 
+	on delete set null or cascade 
+);
+
+delete from branch 
+where branch_id = 2; -> successfully deleted
+
+------------------------------------------------
+joins
+
+create table branch (
+	branch_id int primary key auto increment = 1, 
+	location varchar(20) not null,
+	addr varchar(100)
+);
+
+set null : sets null
+cascade : -> (delete entire row)
+create table emp (
+	id int primary key auto increment = 1,
+	ename varchar(20) not null,
+	job_desc varchar(20),
+	salary int,
+	branch_id int,
+	constraint fk_branchId foreign key(branch_id) references branch(branch_id)) 
+	on delete set null or cascade 
+);
+
+inner join == join :
+(differ some way in order)
+
+select emp.id, emp.ename, emp.job_desc, branch.location
+from emp 
+inner join with branch
+on emp.branch_id = branch_id
+order by emp.id;
+
+if the emp.branch_id == null ? it doest not considered.
+
+left join :
+
+select emp.id, emp.ename, emp.job_desc, branch.location
+from emp 
+left join with branch
+on emp.branch_id = branch_id
+order by emp.id;
+
+it shows all rows in emp table.
+
+right join :
+
+select e.id, e.ename, e.job_desc, b.location
+from emp as e
+right join with branch as b
+on e.branch_id = b.id
+order by e.id;
+
+it shows first branch table then the emp table.
+
+using where clause :
+
+select e.id, e.ename, e.job_desc, b.location
+from emp as e, branch as b
+where e.branch_id = b.id;
+
+cross join :
+
+select emp.id, emp.ename, emp.job_desc, branch.location
+from emp 
+cross join branch;
+
+-----------------
+-- want location, emp_count
+
+select b.location, count(e.id) as no_of_emp
+from branch as b 
+join emp as e
+on b.branch_id = e.branch_id
+group by e.branch_id;
+
+--------------------------
+union :
+no of cols match and same date type of two tables.
+
+create table client (
+	client_id int primary key auto increment,
+	location varchar(20) not null,
+	addr varchar(100)
+);
+
+create table branch (
+	branch_int primary key auto increment,
+	branch_name varchar(20) not null,
+	addr varchar(100)	
+);
+
+// remove duplicates
+select * from branch 
+union
+select * from clients;
+
+// it is not
+select * from branch 
+union all
+select * from clients;
+
+
